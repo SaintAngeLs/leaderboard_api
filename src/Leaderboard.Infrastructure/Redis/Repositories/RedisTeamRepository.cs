@@ -5,7 +5,7 @@ using StackExchange.Redis;
 
 namespace Leaderboard.Infrastructure.Redis.Repositories;
 
-public class RedisTeamRepository : ITeamRepository
+ public class RedisTeamRepository : ITeamRepository
 {
     private readonly IDatabase _database;
     private const string TeamKeyPrefix = "team:"; 
@@ -61,5 +61,9 @@ public class RedisTeamRepository : ITeamRepository
         var json = JsonSerializer.Serialize(team);
         await _database.StringSetAsync(key, json);
     }
-}
 
+    public async Task<IEnumerable<Team>> GetAllTeamsAsync()
+    {
+        return await GetAllAsync();
+    }
+}

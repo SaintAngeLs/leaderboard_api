@@ -1,9 +1,12 @@
+using Leaderboard.Application.DTO;
+using Leaderboard.Application.Queries;
 using Leaderboard.Application.Services;
 using Leaderboard.Core.Repositories;
 using Leaderboard.Infrastructure.Auth;
 using Leaderboard.Infrastructure.Errors;
 using Leaderboard.Infrastructure.Exceptions;
 using Leaderboard.Infrastructure.Options;
+using Leaderboard.Infrastructure.Queries;
 using Leaderboard.Infrastructure.RateLimiting;
 using Leaderboard.Infrastructure.Redis.Repositories;
 using Leaderboard.Infrastructure.Services;
@@ -34,6 +37,10 @@ public static class Extensions
 
         services.AddErrorHandling();
         services.AddScoped<IExceptionToMessageMapper, ExceptionToMessageMapper>();
+
+        services.AddTransient<IQueryHandler<GetTeamTotalStepsQuery, int>, GetTeamTotalStepsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetTeamCountersQuery, PaginatedResponse<CounterDto>>, GetTeamCountersQueryHandler>();
+        services.AddTransient<IQueryHandler<GetAllTeamsQuery, PaginatedResponse<TeamDto>>, GetAllTeamsQueryHandler>();
 
         services.AddAuth();
         services.AddRateLimiting();

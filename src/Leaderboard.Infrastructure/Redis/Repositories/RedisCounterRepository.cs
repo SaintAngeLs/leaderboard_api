@@ -64,5 +64,14 @@ public class RedisCounterRepository : ICounterRepository
         var json = JsonSerializer.Serialize(counter);
         await _database.StringSetAsync(key, json);
     }
-}
 
+    public async Task<IEnumerable<Counter>> GetCountersByTeamIdAsync(string teamId)
+    {
+        var allCounters = await GetAllAsync();
+        if (Guid.TryParse(teamId, out Guid teamGuid))
+        {
+            return allCounters.Where(c => c.TeamId == teamGuid);
+        }
+        return Enumerable.Empty<Counter>();
+    }
+}
