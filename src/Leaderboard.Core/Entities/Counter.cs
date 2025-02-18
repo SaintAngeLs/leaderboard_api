@@ -8,14 +8,19 @@ public class Counter
     public Guid Id { get; private set; }
     public string OwnerName { get; private set; }
     public StepCount Steps { get; private set; }
+    public Guid TeamId { get; private set; }
 
-    public Counter(string ownerName)
+    public Counter(string ownerName, Guid teamId)
     {
         if (string.IsNullOrWhiteSpace(ownerName))
             throw new MissingOwnerNameException();
+        
+        if (teamId == Guid.Empty)
+                throw new MissingTeamIdException();
 
         Id = Guid.NewGuid();
         OwnerName = ownerName;
+        TeamId = teamId;
         Steps = new StepCount(0);
     }
 
