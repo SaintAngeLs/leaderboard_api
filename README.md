@@ -297,33 +297,30 @@ This endpoint displays detailed documentation for all available endpoints, inclu
 ## Additional Considerations
 
 - **Clean Architecture:**  
-  The solution follows Clean Architecture principles by separating concerns into different layers (API, Application, Core, and Infrastructure). This promotes testability, maintainability, and scalability.
-  
+  The solution follows Clean Architecture principles by separating concerns into distinct layers (API, Application, Core, and Infrastructure). This modular design not only improves testability, maintainability, and scalability but also allows for easy extension. For example, authorization can be enhanced by integrating a token-based system that leverages an application context and user context (derived from correlation data in the HTTP request) to enforce role-based permissions. This modularity means you can swap out or extend components (like the repository or authentication modules) without affecting the rest of the system.
+
 - **Rate Limiter Middleware:**  
-  A custom rate limiter middleware controls the number of requests per client IP within a specific time window, ensuring fair resource usage and preventing abuse.
+  A custom rate limiter middleware controls the number of requests per client IP within a specific time window. This helps prevent abuse and ensures fair resource usage, making the API more resilient under heavy load.
 
 - **Redis Leveraging:**  
-  Redis is used as an in-memory datastore for high-performance caching and transient storage. The Docker configuration uses a tmpfs volume so that Redis data is automatically cleared upon container restart.
+  Currently, Redis is used as an in-memory datastore for high-performance caching and transient storage. The Docker configuration uses a tmpfs volume so that Redis data is automatically cleared upon container restart. In scenarios requiring persistence, the repository implementation could be extended to use Redis as a persistent store or be replaced with another technology.
 
 - **Persistence:**  
-  For a production scenario, a persistent storage layer (such as SQL Server, PostgreSQL, or a NoSQL solution) would be integrated to ensure data durability across restarts.
+  For production, a persistent storage layer is recommended to ensure data durability across restarts. Depending on the requirements, options include SQL Server, PostgreSQL, or NoSQL solutions. For instance, at scale, the repository layer could be extended to support PostgreSQL, while still leveraging Redis for caching and quick-access scenarios.
 
 - **Fault Tolerance & Scalability:**  
-  The API is designed to be scalable and fault-tolerant. In high-load scenarios, you might use Redis clusters, message queues, and load balancers to distribute load and ensure high availability.
+  The API is designed with scalability and fault tolerance in mind. In high-load environments, you might leverage:
+  - **Redis clusters:** For distributed caching and session management.
+  - **Message queues:** To decouple components and ensure reliable command processing.
+  - **Load balancers:** To distribute incoming requests across multiple API instances.
+  This architecture can handle increases in teams, counters, and traffic (even for a global contest scenario), and adjustments to the persistence layer may be made to better suit large-scale demands.
 
 - **Authentication & Authorization:**  
-  The API can be extended with authentication middleware to restrict access to certain endpoints and implement role-based permissions.
+  The API can be extended with authentication middleware to restrict access to specific endpoints. Role-based permissions can be implemented by integrating token-based authentication (e.g., JWT) along with context-aware authorization that considers user identity and correlation context from the HTTP request. This enables fine-grained control over which users can update specific counters or perform certain operations.
+
 
 ## License
 
 This project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for details.
 
 ---
-
-### Final Notes
-
-- This README explains that the solution is built using CQRS, DDD, Clean Architecture principles, and leverages Redis for in-memory storage.
-- It describes each endpoint with payload examples and includes images from the `docs` folder for visual reference.
-- It covers how to run the application both locally and with Docker, and it highlights the use of Scalar for API documentation.
-
-Feel free to modify any section to best match your project's details or to add any additional information.
