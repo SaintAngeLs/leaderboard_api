@@ -274,7 +274,7 @@ The provided Docker Compose file in the `scripts` folder (named `infrastructure.
      ```
   2. Build and run the containers:
      ```bash
-     docker-compose -f infrastructure.yml up --build -d
+     docker compose -f infrastructure.yml up --build -d
      ```
   3. The API will be accessible at [http://localhost:5005](http://localhost:5005).  
      The environment variable `ASPNETCORE_URLS=http://+:5005` ensures that the API listens on port **5005**.
