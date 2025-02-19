@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:6.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    # Use an in-memory tmpfs volume so that 
+    # data does not persist between restarts.
+    volumes:
+      - type: tmpfs
+        target: /data
+    restart: always
