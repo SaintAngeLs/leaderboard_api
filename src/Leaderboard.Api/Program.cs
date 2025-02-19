@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 using System.Reflection;
 using Microsoft.OpenApi.Models;
+using Leaderboard.Infrastructure.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRateLimiting(); 
 
 app.UseErrorHandling();
 // app.UseAuth();
