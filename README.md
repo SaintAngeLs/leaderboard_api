@@ -298,7 +298,7 @@ This endpoint displays detailed documentation for all available endpoints, inclu
 
 ## Deployment Details
 
-The application is deployed on AWS ECS/Fargate using a Clean Architecture, CQRS, and DDD approach. The deployment was managed by [SaintAngels](https://www.saintangels.com) (SaintAngels Author). All container images are stored in Amazon ECR, and the services are orchestrated using ECS Fargate. The API container runs alongside a Redis container for caching, with AWS Cloud Map service discovery enabling secure internal communication. The public API endpoint is exposed through an Application Load Balancer and Route 53 DNS records for stable, scalable access.
+The application is deployed on AWS ECS/Fargate using a Clean Architecture, CQRS, and DDD approach. The deployment was managed by [@SaintAngeLs](https://github.com/SaintAngeLs). All container images are stored in Amazon ECR, and the services are orchestrated using ECS Fargate. The API container runs alongside a Redis container for caching, with AWS Cloud Map service discovery enabling secure internal communication. The public API endpoint is exposed through an Application Load Balancer and Route 53 DNS records for stable, scalable access.
 
 ---
 
