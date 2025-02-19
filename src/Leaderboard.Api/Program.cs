@@ -1,41 +1,68 @@
+using Leaderboard.Api.Options;
+using Leaderboard.Core;
+using Leaderboard.Application;
+using Leaderboard.Infrastructure;
+using Leaderboard.Infrastructure.Auth;
+using Leaderboard.Infrastructure.Errors;
+using Microsoft.Extensions.Options;
+using Scalar.AspNetCore;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
+using Leaderboard.Infrastructure.RateLimiting;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddMemoryCache();
+
+builder.Services.Configure<ApiOptions>(builder.Configuration.GetSection("ApiOptions"));
+
+builder.Services.AddCore();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddAuth();
+builder.Services.AddErrorHandling();
+
+builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo 
+    {
+        Title = "Leaderboard API",
+        Version = "v1",
+        Description = "API for managing teams and counters in the Leaderboard application."
+    });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger(c =>
+    {
+        // Serve the spec at /openapi/v1.json (for document "v1")
+        c.RouteTemplate = "openapi/{documentName}.json";
+    });
+    // app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseRateLimiting(); 
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.UseErrorHandling();
+// app.UseAuth();
+
+app.MapControllers();
+
+app.MapGet("/", (IOptions<ApiOptions> options) => options.Value.Name);
+
+app.MapScalarApiReference(o => o
+    .WithTheme(ScalarTheme.DeepSpace));
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

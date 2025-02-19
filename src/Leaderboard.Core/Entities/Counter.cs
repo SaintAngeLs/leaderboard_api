@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Leaderboard.Core.Exceptions;
 using Leaderboard.Core.ValueObjects;
 
@@ -23,6 +24,16 @@ public class Counter
         TeamId = teamId;
         Steps = new StepCount(0);
     }
+
+    [JsonConstructor]
+    public Counter(Guid id, string ownerName, StepCount steps, Guid teamId)
+    {
+        Id = id;
+        OwnerName = ownerName;
+        Steps = steps;
+        TeamId = teamId;
+    }
+
 
     public void Increment(int stepIncrement)
     {
