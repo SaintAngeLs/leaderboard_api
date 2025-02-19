@@ -17,31 +17,31 @@ This project is a CQRS hybrid and Domain-Driven Design (DDD) implementation of a
 - [Running the Application Locally](#running-the-application-locally)
 - [Running with Docker](#running-with-docker)
 - [API Documentation with Scalar](#api-documentation-with-scalar)
+- [Deployment Details](#deployment-details)
 - [Additional Considerations](#additional-considerations)
 - [License](#license)
 
 ## Overview
 
 The Leaderboard API is built with .NET (C#) and leverages a CQRS hybrid approach along with Domain-Driven Design principles. It separates commands (create, update, delete operations) from queries (data retrieval) and organizes the solution into multiple projects:
-- `Leaderboard.Api` – The REST API project.
-- `Leaderboard.Application` – Application presentation logic (commands, queries, events, services, services abstractions).
-- `Leaderboard.Core` – Domain models and business rules, repository models.
-- `Leaderboard.Infrastructure` – Infrastructure concerns including Redis integration, middleware exception/responces mappers, message broker service, possible monitoring services and external dependencies.
+- **Leaderboard.Api** – The REST API project.
+- **Leaderboard.Application** – Application presentation logic (commands, queries, events, services, and abstractions).
+- **Leaderboard.Core** – Domain models, business rules, and repository models.
+- **Leaderboard.Infrastructure** – Infrastructure components including Redis integration, middleware for error handling and rate limiting, and external dependency management.
 
 ## Architecture
 
 - **CQRS Hybrid:**  
-  - *Commands* such as **CreateTeam** or **IncrementCounter** are processed by domain services.
-  - *Queries* such as **GetAllTeamsQuery** or **GetTeamByIdQuery** are handled by dedicated query handlers.
+  Commands such as **CreateTeam** and **IncrementCounter** are processed by dedicated domain services, while queries such as **GetAllTeamsQuery** and **GetTeamByIdQuery** are handled by specific query handlers.
   
 - **Domain-Driven Design (DDD):**  
-  The domain model encapsulates business rules through entities (e.g., **Team**, **Counter**) and value objects (e.g., **TeamName**, **StepCount**). This clean architecture enables clear separation between business logic, application logic, and infrastructure.
+  Business logic is encapsulated in domain models (e.g., **Team**, **Counter**) and value objects (e.g., **TeamName**, **StepCount**), allowing clear separation between core business logic, application services, and infrastructure concerns.
 
 - **Redis Leveraging:**  
-  Redis is used as an in-memory datastore for storing counters and team data. This approach is ideal for scenarios where persistence is not critical, and it offers high performance.
+  Redis is used as an in-memory datastore for high-performance caching and transient storage. The Docker configuration employs a tmpfs volume to clear Redis data upon container restart, though this can be extended to a persistent model if required.
 
 - **Rate Limiter Middleware:**  
-  The API uses custom middleware to limit the number of requests per client IP within a specific time window. This ensures fair resource usage and prevents abuse.
+  Custom middleware limits the number of requests per client IP within a given time window to prevent abuse and ensure fair resource usage.
 
 ## User Stories
 
@@ -246,8 +246,8 @@ Below are some images that illustrate key aspects of the application:
 
 ## Running the Application Locally
 
-1. **Clone the repository** and navigate to its root directory (all the scripts below has to be input from the root directory of the repository).
-2. **Run the infrastrucutre services (Redis)**
+1. **Clone the repository** and navigate to its root directory.
+2. **Run the infrastructure services (Redis):**
    ```bash
    cd scripts
    docker compose -f services.yml up -d
@@ -286,41 +286,45 @@ Alternatively, you can use the `services.yml` (if provided) to run specific serv
 
 ## API Documentation with Scalar
 
-Scalar is used instead of Swagger for API documentation. Once the API is running, navigate to:
+Scalar is used instead of Swagger for API documentation. Once the API is running, you can view the documentation at:
 
 ```
-http://localhost:5005/scalar/v1
+http://35.174.166.92:5005/scalar/v1
 ```
 
 This endpoint displays detailed documentation for all available endpoints, including request payloads and responses.
 
+---
+
+## Deployment Details
+
+The application is deployed on AWS ECS/Fargate using a Clean Architecture, CQRS, and DDD approach. The deployment was managed by [SaintAngels](https://www.saintangels.com) (SaintAngels Author). All container images are stored in Amazon ECR, and the services are orchestrated using ECS Fargate. The API container runs alongside a Redis container for caching, with AWS Cloud Map service discovery enabling secure internal communication. The public API endpoint is exposed through an Application Load Balancer and Route 53 DNS records for stable, scalable access.
+
+---
+
 ## Additional Considerations
 
 - **Clean Architecture:**  
-  The solution follows Clean Architecture principles by separating concerns into distinct layers (API, Application, Core, and Infrastructure). This modular design not only improves testability, maintainability, and scalability but also allows for easy extension. For example, authorization can be enhanced by integrating a token-based system that leverages an application context and user context (derived from correlation data in the HTTP request) to enforce role-based permissions. This modularity means you can swap out or extend components (like the repository or authentication modules) without affecting the rest of the system.
+  The solution follows Clean Architecture principles by separating concerns into distinct layers (API, Application, Core, and Infrastructure). This modular design improves testability, maintainability, and scalability, and enables easy extension—such as enhanced authorization using token-based systems combined with context-aware policies derived from HTTP request correlation data.
 
 - **Rate Limiter Middleware:**  
-  A custom rate limiter middleware controls the number of requests per client IP within a specific time window. This helps prevent abuse and ensures fair resource usage, making the API more resilient under heavy load.
+  Custom middleware limits the number of requests per client IP within a specific time window, ensuring fair resource usage and preventing abuse under heavy load.
 
 - **Redis Leveraging:**  
-  Currently, Redis is used as an in-memory datastore for high-performance caching and transient storage. The Docker configuration uses a tmpfs volume so that Redis data is automatically cleared upon container restart. In scenarios requiring persistence, the repository implementation could be extended to use Redis as a persistent store or be replaced with another technology.
+  Redis is used as an in-memory datastore for high-performance caching and transient storage. The current configuration uses a tmpfs volume for ephemeral data, but in production, the repository can be extended to use Redis (or another persistent technology) for long-term data durability.
 
 - **Persistence:**  
-  For production, a persistent storage layer is recommended to ensure data durability across restarts. Depending on the requirements, options include SQL Server, PostgreSQL, or NoSQL solutions. For instance, at scale, the repository layer could be extended to support PostgreSQL, while still leveraging Redis for caching and quick-access scenarios.
+  While the application currently relies on in-memory storage, production environments should integrate a persistent storage layer (e.g., SQL Server, PostgreSQL, or a NoSQL solution) to ensure data durability and consistency across restarts.
 
 - **Fault Tolerance & Scalability:**  
-  The API is designed with scalability and fault tolerance in mind. In high-load environments, you might leverage:
-  - **Redis clusters:** For distributed caching and session management.
-  - **Message queues:** To decouple components and ensure reliable command processing.
-  - **Load balancers:** To distribute incoming requests across multiple API instances.
-  This architecture can handle increases in teams, counters, and traffic (even for a global contest scenario), and adjustments to the persistence layer may be made to better suit large-scale demands.
+  The API is designed to scale and handle high loads. Consider employing Redis clusters for distributed caching, message queues for decoupled processing, and load balancers to evenly distribute traffic. This approach ensures resilience in global contest scenarios with a high volume of requests.
 
 - **Authentication & Authorization:**  
-  The API can be extended with authentication middleware to restrict access to specific endpoints. Role-based permissions can be implemented by integrating token-based authentication (e.g., JWT) along with context-aware authorization that considers user identity and correlation context from the HTTP request. This enables fine-grained control over which users can update specific counters or perform certain operations.
+  The API can be enhanced with token-based authentication (e.g., JWT) and context-aware authorization mechanisms, enabling fine-grained control over access to specific endpoints and operations. The modular architecture allows these security features to be integrated without impacting other components.
 
+---
 
 ## License
 
 This project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for details.
 
----
