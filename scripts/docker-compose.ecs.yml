@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:6.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    # Use an in-memory tmpfs volume so that 
+    # data does not persist between restarts.
+    volumes:
+      - type: tmpfs
+        target: /data
+    restart: always
+
+  leaderboard-api:
+    build:
+      context: ..
+      dockerfile: scripts/Dockerfile
+    container_name: leaderboard-api
+    ports:
+      - "5005:5005" 
+    depends_on:
+      - redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5005
+      - AppOptions__Database__ConnectionString=redis:6379
+    restart: on-failure

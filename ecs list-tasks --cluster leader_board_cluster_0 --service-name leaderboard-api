@@ -1,0 +1,161 @@
+{
+    "tasks": [
+        {
+            "attachments": [
+                {
+                    "id": "3ec28da5-50b5-468f-8c2c-f7155cdadc44",
+                    "type": "ServiceConnect",
+                    "status": "ATTACHED",
+                    "details": [
+                        {
+                            "name": "ContainerName",
+                            "value": "ecs-service-connect-10X5Yf"
+                        }
+                    ]
+                },
+                {
+                    "id": "43fb5f12-ecc0-4794-adbb-98fd0dcb1a02",
+                    "type": "ElasticNetworkInterface",
+                    "status": "ATTACHED",
+                    "details": [
+                        {
+                            "name": "subnetId",
+                            "value": "subnet-06d607c6ce5545c49"
+                        },
+                        {
+                            "name": "networkInterfaceId",
+                            "value": "eni-0ec71f15c74f683f1"
+                        },
+                        {
+                            "name": "macAddress",
+                            "value": "16:ff:f3:f0:d2:5f"
+                        },
+                        {
+                            "name": "privateDnsName",
+                            "value": "ip-172-31-67-134.ec2.internal"
+                        },
+                        {
+                            "name": "privateIPv4Address",
+                            "value": "172.31.67.134"
+                        }
+                    ]
+                }
+            ],
+            "attributes": [
+                {
+                    "name": "ecs.cpu-architecture",
+                    "value": "x86_64"
+                }
+            ],
+            "availabilityZone": "us-east-1f",
+            "capacityProviderName": "FARGATE",
+            "clusterArn": "arn:aws:ecs:us-east-1:471112539374:cluster/leader_board_cluster_0",
+            "connectivity": "CONNECTED",
+            "connectivityAt": "2025-02-19T12:02:27.139000+01:00",
+            "containers": [
+                {
+                    "containerArn": "arn:aws:ecs:us-east-1:471112539374:container/leader_board_cluster_0/699d9e46b7ad428a8a41d9110501ca8f/7403f290-64a3-4cd2-acb2-0a96e8190015",
+                    "taskArn": "arn:aws:ecs:us-east-1:471112539374:task/leader_board_cluster_0/699d9e46b7ad428a8a41d9110501ca8f",
+                    "name": "ecs-service-connect-10X5Yf",
+                    "lastStatus": "RUNNING",
+                    "networkInterfaces": [
+                        {
+                            "attachmentId": "43fb5f12-ecc0-4794-adbb-98fd0dcb1a02",
+                            "privateIpv4Address": "172.31.67.134"
+                        }
+                    ],
+                    "healthStatus": "HEALTHY"
+                },
+                {
+                    "containerArn": "arn:aws:ecs:us-east-1:471112539374:container/leader_board_cluster_0/699d9e46b7ad428a8a41d9110501ca8f/90915246-b6b6-4a6b-a604-0296423fccac",
+                    "taskArn": "arn:aws:ecs:us-east-1:471112539374:task/leader_board_cluster_0/699d9e46b7ad428a8a41d9110501ca8f",
+                    "name": "leaderboard-api",
+                    "image": "471112539374.dkr.ecr.us-east-1.amazonaws.com/leaderboard-api:latest",
+                    "imageDigest": "sha256:5312ddf60a658c65c161bca168625ee0de4173e7c3997c63b79004c66b7e3654",
+                    "runtimeId": "699d9e46b7ad428a8a41d9110501ca8f-4232467457",
+                    "lastStatus": "RUNNING",
+                    "networkBindings": [],
+                    "networkInterfaces": [
+                        {
+                            "attachmentId": "43fb5f12-ecc0-4794-adbb-98fd0dcb1a02",
+                            "privateIpv4Address": "172.31.67.134"
+                        }
+                    ],
+                    "healthStatus": "UNKNOWN",
+                    "cpu": "0"
+                }
+            ],
+            "cpu": "1024",
+            "createdAt": "2025-02-19T12:02:23.492000+01:00",
+            "desiredStatus": "RUNNING",
+            "enableExecuteCommand": false,
+            "group": "service:leaderboard-api",
+            "healthStatus": "HEALTHY",
+            "lastStatus": "RUNNING",
+            "launchType": "FARGATE",
+            "memory": "3072",
+            "overrides": {
+                "containerOverrides": [
+                    {
+                        "name": "ecs-service-connect-10X5Yf",
+                        "environment": [
+                            {
+                                "name": "ENVOY_CONCURRENCY",
+                                "value": "2"
+                            },
+                            {
+                                "name": "ENVOY_ADMIN_MODE",
+                                "value": "UDS"
+                            },
+                            {
+                                "name": "ENABLE_STATS_SNAPSHOT",
+                                "value": "true"
+                            },
+                            {
+                                "name": "APPMESH_METRIC_EXTENSION_VERSION",
+                                "value": "1"
+                            },
+                            {
+                                "name": "APPNET_ENVOY_RESTART_COUNT",
+                                "value": "3"
+                            },
+                            {
+                                "name": "HC_DISCONNECTED_TIMEOUT_S",
+                                "value": "10800"
+                            },
+                            {
+                                "name": "APPNET_AGENT_ADMIN_MODE",
+                                "value": "UDS"
+                            },
+                            {
+                                "name": "APPMESH_RESOURCE_ARN",
+                                "value": "arn:aws:ecs:us-east-1:471112539374:task-set/leader_board_cluster_0/leaderboard-api/ecs-svc/4375995805978628992"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "leaderboard-api"
+                    }
+                ],
+                "inferenceAcceleratorOverrides": []
+            },
+            "platformVersion": "1.4.0",
+            "platformFamily": "Linux",
+            "pullStartedAt": "2025-02-19T12:02:37.246000+01:00",
+            "pullStoppedAt": "2025-02-19T12:02:43.814000+01:00",
+            "startedAt": "2025-02-19T12:03:23.286000+01:00",
+            "startedBy": "ecs-svc/4375995805978628992",
+            "tags": [],
+            "taskArn": "arn:aws:ecs:us-east-1:471112539374:task/leader_board_cluster_0/699d9e46b7ad428a8a41d9110501ca8f",
+            "taskDefinitionArn": "arn:aws:ecs:us-east-1:471112539374:task-definition/leaderboard-api-task:6",
+            "version": 5,
+            "ephemeralStorage": {
+                "sizeInGiB": 20
+            },
+            "fargateEphemeralStorage": {
+                "sizeInGiB": 20
+            }
+        }
+    ],
+    "failures": []
+}

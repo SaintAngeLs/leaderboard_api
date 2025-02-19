@@ -1,0 +1,9 @@
+# Dockerfile.redis
+
+FROM redis:6.2
+
+# (Optional) Copy custom Redis configuration if needed.
+# COPY redis.conf /usr/local/etc/redis/redis.conf
+# CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+# By default, the official image starts Redis with its default configuration.
