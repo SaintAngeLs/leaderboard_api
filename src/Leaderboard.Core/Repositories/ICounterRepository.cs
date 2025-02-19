@@ -9,5 +9,6 @@ public interface ICounterRepository
     Task AddAsync(Counter counter);
     Task DeleteAsync(Guid id);
     Task UpdateAsync(Counter counter);
+    Task<IEnumerable<Counter>> GetCountersByTeamIdAsync(string teamId);
 }
 

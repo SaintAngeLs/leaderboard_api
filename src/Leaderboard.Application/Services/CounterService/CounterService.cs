@@ -11,7 +11,8 @@ public class CounterService : ICounterService
     private readonly ICounterRepository _counterRepository;
     private readonly IMessageBroker _messageBroker;
 
-    public CounterService(ITeamRepository teamRepository, ICounterRepository counterRepository, IMessageBroker messageBroker)
+    public CounterService(ITeamRepository teamRepository, 
+        ICounterRepository counterRepository, IMessageBroker messageBroker)
     {
         _teamRepository = teamRepository;
         _counterRepository = counterRepository;
@@ -26,7 +27,7 @@ public class CounterService : ICounterService
             throw new TeamNotFoundException(teamId);
         }
 
-        var counter = new Counter(ownerName);
+        var counter = new Counter(ownerName, teamId);
         team.AddCounter(counter);
         await _teamRepository.UpdateAsync(team);
         await _counterRepository.AddAsync(counter);
