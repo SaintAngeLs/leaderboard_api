@@ -41,6 +41,7 @@ public static class Extensions
         services.AddTransient<IQueryHandler<GetTeamTotalStepsQuery, int>, GetTeamTotalStepsQueryHandler>();
         services.AddTransient<IQueryHandler<GetTeamCountersQuery, PaginatedResponse<CounterDto>>, GetTeamCountersQueryHandler>();
         services.AddTransient<IQueryHandler<GetAllTeamsQuery, PaginatedResponse<TeamDto>>, GetAllTeamsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetTeamByIdQuery, TeamDto>, GetTeamByIdQueryHandler>();
 
         services.AddAuth();
         services.AddRateLimiting();
